@@ -30,7 +30,7 @@ export default (): DBConfig => {
 
   const host = process.env.mongo_01_host || 'localhost',
     port = process.env.mongo_01_port || 27017,
-    database = process.env.instance_database_name || 'test',
+    database = process.env.instance_database_name || 'nest-starter',
     login = process.env.instance_database_user || '',
     password = process.env.instance_database_pwd || '',
     replicaSet = repl || {
