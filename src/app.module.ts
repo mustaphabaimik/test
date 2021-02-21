@@ -1,9 +1,24 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
+import DBConfig from './_config/db.config';
+
+const dbConfig = DBConfig();
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      expandVariables: true,
+      load: [DBConfig],
+    }),
+    MongooseModule.forRoot(dbConfig.url, dbConfig.options),
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
