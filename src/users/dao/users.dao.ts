@@ -1,15 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { DAO } from '.';
+import { DAO, QueryOptions } from '.';
 import { User, UserDocument } from '../schemas/user.schema';
 
 @Injectable()
 export class UsersDAO implements DAO<User> {
   constructor(@InjectModel('User') private UserModel: Model<UserDocument>) {}
 
-  async find(query: any = {}): Promise<User[]> {
-    return this.UserModel.find(query);
+  async find(query: any = {}, options: QueryOptions): Promise<User[]> {
+    const { page, limit } = options;
+    console.log(page, limit);
+
+    return this.UserModel.aggregate([
+      {
+        $facet: {
+          docs: [
+            { $match: query },
+            { $skip: (page - 1) * limit },
+            { $limit: limit },
+          ],
+          total: [{ $count: 'total' }],
+        },
+      },
+    ]);
   }
 
   async findOne(id: string | number): Promise<User> {

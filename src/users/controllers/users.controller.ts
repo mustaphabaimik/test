@@ -20,9 +20,10 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: 'Get a list of Users' })
-  findAll(@Query() queryParams) {
-    const { page, limit } = queryParams;
-    return this.usersService.findAll();
+  find(@Query('page') p: string, @Query('limit') l: string) {
+    const page = p ? parseInt(p, 10) : 1;
+    const limit = l ? parseInt(l, 10) : 100;
+    return this.usersService.find({}, { page, limit });
   }
 
   @Get(':id')

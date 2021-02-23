@@ -16,7 +16,17 @@ const dbConfig = DBConfig();
       expandVariables: true,
       load: [DBConfig],
     }),
-    MongooseModule.forRoot(dbConfig.url, dbConfig.options),
+    MongooseModule.forRoot(
+      dbConfig.url,
+      dbConfig.options,
+      // {
+      //   connectionFactory: (connection: Connection) => {
+      //     connection.plugin(mongoosePaginate);
+      //     connection.config = dbConfig.options;
+      //     return connection;
+      //   },
+      // },
+    ),
     UsersModule,
   ],
   controllers: [AppController],
