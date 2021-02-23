@@ -4,21 +4,22 @@ export interface QueryOptions {
   sort?: any;
   select?: number;
   populate?: any;
-  offset?: number;
-  lean?: boolean;
 }
 
 export interface QueryResults<T> {
   docs: T[];
-  total: number;
-  limit: number;
-  page: number;
-  pages: number;
-  offset?: number;
+  meta: [
+    {
+      limit: number;
+      page: number;
+      totalPages: number;
+      totalDocs: number;
+    },
+  ];
 }
 
 export interface DAO<T> {
-  find(query?: any, options?: QueryOptions): Promise<T[]>;
+  find(query?: any, options?: QueryOptions): Promise<QueryResults<T>[]>;
 
   findOne(id: number | string): Promise<T>;
 
