@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -20,10 +21,23 @@ export class UsersController {
 
   @Get()
   @ApiOperation({ summary: 'Get a list of Users' })
-  find(@Query('page') p: string, @Query('limit') l: string) {
+  find(
+    @Query('page') p: string,
+    @Query('limit') l: string,
+    @Query('select') s: string,
+  ) {
     const page = p ? parseInt(p, 10) : 1;
     const limit = l ? parseInt(l, 10) : 100;
-    return this.usersService.find({}, { page, limit });
+    let select;
+    try {
+      select = s ? JSON.parse(s) : [];
+    } catch (error) {
+      throw new BadRequestException(
+        error,
+        'select query param must be an array of strings',
+      );
+    }
+    return this.usersService.find({}, { page, limit, select });
   }
 
   @Get(':id')

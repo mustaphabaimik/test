@@ -13,9 +13,27 @@ export class UsersDAO implements DAO<User> {
     options: QueryOptions,
   ): Promise<QueryResults<User>[]> {
     const { page, limit } = options;
+
+    // Prepare Projection
+    const projection = {};
+    if (Array.isArray(options?.select) && options?.select?.length) {
+      options.select.forEach((attr) => (projection[attr] = 1));
+    } else {
+      Object.keys(this.UserModel.schema.obj).forEach(
+        (attr) => (projection[attr] = 1),
+      );
+    }
+
+    // Prepare Aggregation query
     const data: QueryResults<User>[] = await this.UserModel.aggregate([
       {
         $match: { ...query /* , active: true */ },
+      },
+      {
+        $project: {
+          ...projection,
+          password: -1,
+        },
       },
       {
         $facet: {

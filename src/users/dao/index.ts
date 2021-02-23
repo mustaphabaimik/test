@@ -2,7 +2,7 @@ export interface QueryOptions {
   page?: number;
   limit?: number;
   sort?: any;
-  select?: number;
+  select?: string[];
   populate?: any;
 }
 
